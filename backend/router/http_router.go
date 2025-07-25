@@ -42,3 +42,9 @@ func (r *HTTPRouter) SetupCORS() {
 		c.Next()
 	})
 }
+
+func (r *HTTPRouter) SetupMemoryRoutes(memoryController controller.Memory) {
+	memory := r.ginEngine.Group("/memory")
+	usage := memory.Group("/usage")
+	usage.GET("/all", memoryController.GetUsage)
+}

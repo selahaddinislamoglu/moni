@@ -8,6 +8,7 @@ import (
 
 type Router interface {
 	SetupCPURoutes(cpuController controller.CPU)
+	SetupMemoryRoutes(memoryController controller.Memory)
 	SetupCORS()
 	GetHTTPHandler() (http.Handler, error)
 }

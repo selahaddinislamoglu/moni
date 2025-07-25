@@ -12,7 +12,7 @@ type CPUService struct {
 	data model.CPU
 }
 
-func NewCPUCalculator() CPU {
+func NewCPUService() CPU {
 
 	cpu := &CPUService{}
 	cpu.startMonitoring()
