@@ -9,3 +9,7 @@ type CPU interface {
 type Memory interface {
 	GetUsage() (model.Memory, error)
 }
+
+type Disk interface {
+	GetUsageLastFiveSeconds() (model.Disk, error)
+}

@@ -6,6 +6,7 @@ import {
 function App() {
   const [cpuData, setCpuData] = useState([]);
   const [memData, setMemData] = useState([]);
+  const [diskData, setDiskData] = useState([]);
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -18,14 +19,23 @@ function App() {
         const memRes = await fetch('http://localhost:8080/memory/usage/all');
         const memJson = await memRes.json();
 
+        // Fetch Disk
+        const diskRes = await fetch('http://localhost:8080/disk/usage/last-five-seconds');
+        const diskJson = await diskRes.json();
+
         setCpuData(prev => {
           const newData = [...prev, { time: new Date(cpuJson.time * 1000).toLocaleTimeString(), usage: cpuJson.usage }];
-          return newData.slice(-100);
+          return newData.slice(-60);
         });
 
         setMemData(prev => {
           const newData = [...prev, { time: new Date(memJson.time * 1000).toLocaleTimeString(), usage: memJson.usage }];
-          return newData.slice(-100);
+          return newData.slice(-60);
+        });
+
+        setDiskData(prev => {
+          const newData = [...prev, { time: new Date(diskJson.time * 1000).toLocaleTimeString(), usage: diskJson.usage }];
+          return newData.slice(-60);
         });
       } catch (err) {
         console.error('Fetch error:', err);
@@ -54,6 +64,17 @@ function App() {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="time" />
           <YAxis domain={[0, 100]} unit="%" />
+          <Tooltip />
+          <Line type="monotone" dataKey="usage" stroke="#82ca9d" dot={false} />
+        </LineChart>
+      </ResponsiveContainer>
+
+      <h2 style={{ marginTop: '40px' }}>Real-time Disk Usage</h2>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={diskData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="time" />
+          <YAxis domain={[0, 100]} unit="MB" />
           <Tooltip />
           <Line type="monotone" dataKey="usage" stroke="#82ca9d" dot={false} />
         </LineChart>

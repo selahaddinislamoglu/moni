@@ -48,3 +48,9 @@ func (r *HTTPRouter) SetupMemoryRoutes(memoryController controller.Memory) {
 	usage := memory.Group("/usage")
 	usage.GET("/all", memoryController.GetUsage)
 }
+
+func (r *HTTPRouter) SetupDiskRoutes(diskController controller.Disk) {
+	disk := r.ginEngine.Group("/disk")
+	usage := disk.Group("/usage")
+	usage.GET("/last-five-seconds", diskController.GetUsageLastFiveSeconds)
+}

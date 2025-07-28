@@ -14,3 +14,8 @@ type Memory interface {
 	SetupMemoryService(memoryService service.Memory)
 	GetUsage(ctx *gin.Context)
 }
+
+type Disk interface {
+	SetupDiskService(diskService service.Disk)
+	GetUsageLastFiveSeconds(ctx *gin.Context)
+}

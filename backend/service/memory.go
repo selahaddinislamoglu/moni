@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/selahaddinislamoglu/moni/backend/model"
-	"github.com/shirou/gopsutil/v3/mem"
+	"github.com/shirou/gopsutil/v4/mem"
 )
 
 type MemoryService struct {

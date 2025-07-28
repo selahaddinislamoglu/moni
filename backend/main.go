@@ -10,6 +10,7 @@ import (
 func main() {
 	cpuService := service.NewCPUService()
 	memoryService := service.NewMemoryService()
+	diskService := service.NewDiskService()
 
 	cpuController := controller.NewCPUController()
 	cpuController.SetupCPUService(cpuService)
@@ -17,10 +18,14 @@ func main() {
 	memoryController := controller.NewMemoryController()
 	memoryController.SetupMemoryService(memoryService)
 
+	diskController := controller.NewDiskController()
+	diskController.SetupDiskService(diskService)
+
 	router := router.NewHTTPRouter()
 	router.SetupCORS()
 	router.SetupCPURoutes(cpuController)
 	router.SetupMemoryRoutes(memoryController)
+	router.SetupDiskRoutes(diskController)
 
 	httpServer := server.NewHTTPServer()
 	httpServer.SetupRoutes(router)

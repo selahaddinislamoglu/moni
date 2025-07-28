@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/selahaddinislamoglu/moni/backend/model"
-	"github.com/shirou/gopsutil/v3/cpu"
+	"github.com/shirou/gopsutil/v4/cpu"
 )
 
 type CPUService struct {
