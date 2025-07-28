@@ -54,3 +54,9 @@ func (r *HTTPRouter) SetupDiskRoutes(diskController controller.Disk) {
 	usage := disk.Group("/usage")
 	usage.GET("/last-five-seconds", diskController.GetUsageLastFiveSeconds)
 }
+
+func (r *HTTPRouter) SetupNetworkRoutes(networkController controller.Network) {
+	network := r.ginEngine.Group("/network")
+	usage := network.Group("/usage")
+	usage.GET("/last-five-seconds", networkController.GetUsageLastFiveSeconds)
+}

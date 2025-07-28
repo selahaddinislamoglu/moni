@@ -13,3 +13,7 @@ type Memory interface {
 type Disk interface {
 	GetUsageLastFiveSeconds() (model.Disk, error)
 }
+
+type Network interface {
+	GetUsageLastFiveSeconds() (model.Network, error)
+}

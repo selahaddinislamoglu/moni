@@ -11,6 +11,7 @@ func main() {
 	cpuService := service.NewCPUService()
 	memoryService := service.NewMemoryService()
 	diskService := service.NewDiskService()
+	networkService := service.NewNetworkService()
 
 	cpuController := controller.NewCPUController()
 	cpuController.SetupCPUService(cpuService)
@@ -21,11 +22,15 @@ func main() {
 	diskController := controller.NewDiskController()
 	diskController.SetupDiskService(diskService)
 
+	networkController := controller.NewNetworkController()
+	networkController.SetupNetworkService(networkService)
+
 	router := router.NewHTTPRouter()
 	router.SetupCORS()
 	router.SetupCPURoutes(cpuController)
 	router.SetupMemoryRoutes(memoryController)
 	router.SetupDiskRoutes(diskController)
+	router.SetupNetworkRoutes(networkController)
 
 	httpServer := server.NewHTTPServer()
 	httpServer.SetupRoutes(router)
