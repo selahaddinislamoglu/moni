@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 40px auto;
+        }
+
+        .chart {
+            width: 45%;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="chart">
+            <canvas id="cpu-chart"></canvas>
+        </div>
+        <div class="chart">
+            <canvas id="memory-chart"></canvas>
+        </div>
+        <div class="chart">
+            <canvas id="disk-chart"></canvas>
+        </div>
+        <div class="chart">
+            <canvas id="net-chart"></canvas>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const updateChart = (chart, data) => {
+            const date = new Date(data.time * 1000);
+            chart.data.labels.push(date.toLocaleTimeString());
+            chart.data.datasets[0].data.push(data.usage);
+            chart.data.labels = chart.data.labels.slice(-20);
+            chart.data.datasets[0].data = chart.data.datasets[0].data.slice(-20);
+            chart.update();
+        };
+
+        const cpuChart = new Chart(
+            document.getElementById('cpu-chart'),
+            {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'CPU',
+                        data: [],
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            }
+        );
+
+        const memoryChart = new Chart(
+            document.getElementById('memory-chart'),
+            {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Memory',
+                        data: [],
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            }
+        );
+
+        const diskChart = new Chart(
+            document.getElementById('disk-chart'),
+            {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Disk',
+                        data: [],
+                        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                        borderColor: 'rgba(255, 206, 86, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            }
+        );
+
+        const netChart = new Chart(
+            document.getElementById('net-chart'),
+            {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Network',
+                        data: [],
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            }
+        );
+
+        async function updateCharts() {
+            const [cpu, memory, disk, net] = await Promise.all([
+                fetch('/api/cpu/usage/last-five-seconds', {
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+                    },
+                }).then(r => r.json()),
+                fetch('/api/memory/usage/all', {
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+                    },
+                }).then(r => r.json()),
+                fetch('/api/disk/usage/last-five-seconds', {
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+                    },
+                }).then(r => r.json()),
+                fetch('/api/network/usage/last-five-seconds', {
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+                    },
+                }).then(r => r.json()),
+            ]);
+
+            updateChart(cpuChart, cpu);
+            updateChart(memoryChart, memory);
+            updateChart(diskChart, disk);
+            updateChart(netChart, net);
+        }
+
+        setInterval(updateCharts, 5000);
+
+    </script>
+</body>
+
+</html>
