@@ -9,13 +9,18 @@ import (
 )
 
 type DiskService struct {
-	data model.Disk
+	data      model.Disk
+	publisher Publisher
 }
 
 func NewDiskService() Disk {
 	disk := &DiskService{}
 	disk.startMonitoring()
 	return disk
+}
+
+func (d *DiskService) Setup(Publisher Publisher) {
+	d.publisher = Publisher
 }
 
 func (d *DiskService) startMonitoring() {
@@ -52,6 +57,7 @@ func (d *DiskService) startMonitoring() {
 			timeDiff = float64(readTime-prevReadTime) / 1000
 			d.data.Usage = (float64(readBytesDiff+writeBytesDiff) / timeDiff) / (1024 * 1024)
 			d.data.Time = time.Now().Unix()
+			d.publisher.Publish(DiskTopic, d.data)
 		end:
 			prevReadBytes = readBytes
 			prevWriteBytes = writeBytes

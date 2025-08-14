@@ -8,10 +8,34 @@ import (
 )
 
 type MemoryService struct {
+	data      model.Memory
+	publisher Publisher
 }
 
 func NewMemoryService() Memory {
-	return &MemoryService{}
+	s := &MemoryService{}
+	s.startMonitoring()
+	return s
+}
+
+func (s *MemoryService) startMonitoring() {
+	go func() {
+		time.Sleep(5 * time.Second)
+		for {
+			start := time.Now()
+			data, err := s.GetUsage()
+			if err != nil {
+				continue
+			}
+			s.data = data
+			s.publisher.Publish(MemoryTopic, s.data)
+			time.Sleep(5*time.Second - time.Since(start))
+		}
+	}()
+}
+
+func (s *MemoryService) Setup(Publisher Publisher) {
+	s.publisher = Publisher
 }
 
 func (s *MemoryService) GetUsage() (model.Memory, error) {

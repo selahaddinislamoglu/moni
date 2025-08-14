@@ -9,13 +9,18 @@ import (
 )
 
 type NetworkService struct {
-	data model.Network
+	data      model.Network
+	publisher Publisher
 }
 
 func NewNetworkService() Network {
 	network := &NetworkService{}
 	network.startMonitoring()
 	return network
+}
+
+func (d *NetworkService) Setup(Publisher Publisher) {
+	d.publisher = Publisher
 }
 
 func (d *NetworkService) startMonitoring() {
@@ -46,6 +51,7 @@ func (d *NetworkService) startMonitoring() {
 
 			d.data.Usage = (float64(recvBytesDiff+sendBytesDiff) / timeDiff) / (1024 * 1024)
 			d.data.Time = time.Now().Unix()
+			d.publisher.Publish(NetworkTopic, d.data)
 		end:
 			prevBytesRecv = usage.BytesRecv
 			prevBytesSent = usage.BytesSent

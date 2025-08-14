@@ -9,7 +9,8 @@ import (
 )
 
 type CPUService struct {
-	data model.CPU
+	data      model.CPU
+	publisher Publisher
 }
 
 func NewCPUService() CPU {
@@ -19,16 +20,23 @@ func NewCPUService() CPU {
 	return cpu
 }
 
+func (c *CPUService) Setup(Publisher Publisher) {
+	c.publisher = Publisher
+}
+
 func (c *CPUService) startMonitoring() {
 	go func() {
+		var readTime int64 = time.Now().UnixMilli()
 		for {
-			percent, err := cpu.Percent(time.Second*5, false)
+			percent, err := cpu.Percent(time.Second*5-time.Since(time.UnixMilli(readTime)), false)
+			readTime = time.Now().UnixMilli()
 			if err != nil {
 				fmt.Println("Error:", err)
 				continue
 			}
 			c.data.Usage = percent[0]
 			c.data.Time = time.Now().Unix()
+			c.publisher.Publish(CPUTopic, c.data)
 		}
 	}()
 }
