@@ -13,7 +13,7 @@ func NewCPUController() CPU {
 	return &CPUController{}
 }
 
-func (c *CPUController) SetupCPUService(cpuService service.CPU) {
+func (c *CPUController) Setup(cpuService service.CPU) {
 	c.cpuService = cpuService
 }
 

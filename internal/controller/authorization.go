@@ -13,7 +13,7 @@ func NewAuthorizationController() *AuthorizationController {
 	return &AuthorizationController{}
 }
 
-func (a *AuthorizationController) SetupAuthorizationService(authorizationService service.Authorization) {
+func (a *AuthorizationController) Setup(authorizationService service.Authorization) {
 	a.authorizationService = authorizationService
 }
 

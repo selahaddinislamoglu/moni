@@ -30,12 +30,12 @@ type Network interface {
 }
 
 type Authentication interface {
-	SetupSecretService(secret Secret)
+	Setup(secret Secret)
 	Login(request model.LoginRequest) (*model.LoginResponse, error)
 }
 
 type Authorization interface {
-	SetupSecretService(secret Secret)
+	Setup(secret Secret)
 	IsAuthorized(token string) bool
 }
 

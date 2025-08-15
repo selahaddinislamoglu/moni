@@ -19,7 +19,7 @@ func NewAuthenticationService() Authentication {
 	return &AuthenticationService{}
 }
 
-func (s *AuthenticationService) SetupSecretService(secret Secret) {
+func (s *AuthenticationService) Setup(secret Secret) {
 	s.secretService = secret
 }
 

@@ -13,7 +13,7 @@ func NewNetworkController() *NetworkController {
 	return &NetworkController{}
 }
 
-func (n *NetworkController) SetupNetworkService(networkService service.Network) {
+func (n *NetworkController) Setup(networkService service.Network) {
 	n.networkService = networkService
 }
 

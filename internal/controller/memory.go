@@ -13,7 +13,7 @@ func NewMemoryController() Memory {
 	return &MemoryController{}
 }
 
-func (c *MemoryController) SetupMemoryService(memoryService service.Memory) {
+func (c *MemoryController) Setup(memoryService service.Memory) {
 	c.memoryService = memoryService
 }
 

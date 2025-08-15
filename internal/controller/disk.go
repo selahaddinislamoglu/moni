@@ -13,7 +13,7 @@ func NewDiskController() *DiskController {
 	return &DiskController{}
 }
 
-func (d *DiskController) SetupDiskService(diskService service.Disk) {
+func (d *DiskController) Setup(diskService service.Disk) {
 	d.diskService = diskService
 }
 

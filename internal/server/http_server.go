@@ -14,7 +14,7 @@ func NewHTTPServer() Server {
 	return &HTTPServer{}
 }
 
-func (s *HTTPServer) SetupRoutes(router router.Router) {
+func (s *HTTPServer) Setup(router router.Router) {
 	s.router = router
 }
 

@@ -6,32 +6,32 @@ import (
 )
 
 type CPU interface {
-	SetupCPUService(cpuService service.CPU)
+	Setup(cpuService service.CPU)
 	GetUsageLastFiveSeconds(ctx *gin.Context)
 }
 
 type Memory interface {
-	SetupMemoryService(memoryService service.Memory)
+	Setup(memoryService service.Memory)
 	GetUsage(ctx *gin.Context)
 }
 
 type Disk interface {
-	SetupDiskService(diskService service.Disk)
+	Setup(diskService service.Disk)
 	GetUsageLastFiveSeconds(ctx *gin.Context)
 }
 
 type Network interface {
-	SetupNetworkService(networkService service.Network)
+	Setup(networkService service.Network)
 	GetUsageLastFiveSeconds(ctx *gin.Context)
 }
 
 type Authentication interface {
-	SetupAuthenticationService(authenticationService service.Authentication)
+	Setup(authenticationService service.Authentication)
 	Login(ctx *gin.Context)
 }
 
 type Authorization interface {
-	SetupAuthorizationService(authorizationService service.Authorization)
+	Setup(authorizationService service.Authorization)
 	IsAuthorized(ctx *gin.Context) bool
 }
 

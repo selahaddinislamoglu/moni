@@ -13,7 +13,7 @@ func NewAuthorizationService() Authorization {
 	return &AuthorizationService{}
 }
 
-func (a *AuthorizationService) SetupSecretService(secret Secret) {
+func (a *AuthorizationService) Setup(secret Secret) {
 	a.secretService = secret
 }
 

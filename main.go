@@ -12,9 +12,9 @@ import (
 func main() {
 	secretService := service.NewSecretService()
 	authenticationService := service.NewAuthenticationService()
-	authenticationService.SetupSecretService(secretService)
+	authenticationService.Setup(secretService)
 	authorizationService := service.NewAuthorizationService()
-	authorizationService.SetupSecretService(secretService)
+	authorizationService.Setup(secretService)
 
 	brokerService := service.NewBrokerService()
 	loggerSubscriber := service.NewSubscriberService()
@@ -50,18 +50,20 @@ func main() {
 	networkService.Setup(networkPublisher)
 
 	authenticationController := controller.NewAuthenticationController()
-	authenticationController.SetupAuthenticationService(authenticationService)
+	authenticationController.Setup(authenticationService)
 	authorizationController := controller.NewAuthorizationController()
-	authorizationController.SetupAuthorizationService(authorizationService)
+	authorizationController.Setup(authorizationService)
+
 	htmlController := controller.NewHTMLController()
+
 	cpuController := controller.NewCPUController()
-	cpuController.SetupCPUService(cpuService)
+	cpuController.Setup(cpuService)
 	memoryController := controller.NewMemoryController()
-	memoryController.SetupMemoryService(memoryService)
+	memoryController.Setup(memoryService)
 	diskController := controller.NewDiskController()
-	diskController.SetupDiskService(diskService)
+	diskController.Setup(diskService)
 	networkController := controller.NewNetworkController()
-	networkController.SetupNetworkService(networkService)
+	networkController.Setup(networkService)
 
 	router := router.NewHTTPRouter()
 	router.SetupRoutes(authenticationController,
@@ -73,7 +75,7 @@ func main() {
 		networkController)
 
 	httpServer := server.NewHTTPServer()
-	httpServer.SetupRoutes(router)
+	httpServer.Setup(router)
 	if err := httpServer.Serve(":8888"); err != nil {
 		panic(err)
 	}

@@ -14,7 +14,7 @@ func NewAuthenticationController() *AuthenticationController {
 	return &AuthenticationController{}
 }
 
-func (a *AuthenticationController) SetupAuthenticationService(authenticationService service.Authentication) {
+func (a *AuthenticationController) Setup(authenticationService service.Authentication) {
 	a.authenticationService = authenticationService
 }
 
