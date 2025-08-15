@@ -9,6 +9,7 @@ import (
 type Router interface {
 	SetupRoutes(authenticationController controller.Authentication,
 		authorizationController controller.Authorization,
+		websocketController controller.Websocket,
 		htmlController controller.HTML,
 		cpuController controller.CPU,
 		memoryController controller.Memory,

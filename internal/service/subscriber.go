@@ -1,5 +1,7 @@
 package service
 
+import "encoding/json"
+
 type SubscriberService struct {
 	broker   Broker
 	clientID ClientID
@@ -14,7 +16,7 @@ func (s *SubscriberService) Setup(broker Broker) {
 	s.clientID = s.broker.Register()
 }
 
-func (s *SubscriberService) Subscribe(topic string, handler func(message []byte)) {
+func (s *SubscriberService) Subscribe(topic string, handler func(message json.RawMessage)) {
 	s.broker.Subscribe(s.clientID, topic, handler)
 }
 

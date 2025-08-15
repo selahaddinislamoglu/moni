@@ -144,37 +144,37 @@
             }
         );
 
-        async function updateCharts() {
-            const [cpu, memory, disk, net] = await Promise.all([
-                fetch('/api/cpu/usage/last-five-seconds', {
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.getItem('jwt'),
-                    },
-                }).then(r => r.json()),
-                fetch('/api/memory/usage/all', {
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.getItem('jwt'),
-                    },
-                }).then(r => r.json()),
-                fetch('/api/disk/usage/last-five-seconds', {
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.getItem('jwt'),
-                    },
-                }).then(r => r.json()),
-                fetch('/api/network/usage/last-five-seconds', {
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.getItem('jwt'),
-                    },
-                }).then(r => r.json()),
-            ]);
+        const socket = new WebSocket('/api/connect?token=' + localStorage.getItem('jwt'));
 
-            updateChart(cpuChart, cpu);
-            updateChart(memoryChart, memory);
-            updateChart(diskChart, disk);
-            updateChart(netChart, net);
-        }
+        socket.onopen = () => {
+            console.log('Connected to the WebSocket server');
+            socket.send(JSON.stringify({ action: 'subscribe', topic: 'cpu' }));
+            socket.send(JSON.stringify({ action: 'subscribe', topic: 'memory' }));
+            socket.send(JSON.stringify({ action: 'subscribe', topic: 'disk' }));
+            socket.send(JSON.stringify({ action: 'subscribe', topic: 'network' }));
+        };
 
-        setInterval(updateCharts, 5000);
+        socket.onmessage = (event) => {
+            console.log(`Received message: ${event.data}`);
+            const data = JSON.parse(event.data);
+            if (data.topic == "cpu") {
+                updateChart(cpuChart, data.data);
+            } else if (data.topic == "memory") {
+                updateChart(memoryChart, data.data);
+            } else if (data.topic == "disk") {
+                updateChart(diskChart, data.data);
+            } else if (data.topic == "network") {
+                updateChart(netChart, data.data);
+            }
+        };
+
+        socket.onerror = (error) => {
+            console.log(`Error occurred: ${error}`);
+        };
+
+        socket.onclose = () => {
+            console.log('Disconnected from the WebSocket server');
+        };
 
     </script>
 </body>

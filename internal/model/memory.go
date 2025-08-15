@@ -9,7 +9,7 @@ type Memory struct {
 	Time  int64   `json:"time"`
 }
 
-func (m Memory) ToBytes() []byte {
+func (m Memory) ToJSON() json.RawMessage {
 	data, _ := json.Marshal(m)
 	return data
 }

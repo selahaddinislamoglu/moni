@@ -7,7 +7,7 @@ type CPU struct {
 	Time  int64   `json:"time"`
 }
 
-func (c CPU) ToBytes() []byte {
+func (c CPU) ToJSON() json.RawMessage {
 	data, _ := json.Marshal(c)
 	return data
 }

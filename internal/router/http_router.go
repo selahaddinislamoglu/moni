@@ -30,6 +30,7 @@ func (r *HTTPRouter) GetHTTPHandler() (http.Handler, error) {
 
 func (r *HTTPRouter) SetupRoutes(authenticationController controller.Authentication,
 	authorizationController controller.Authorization,
+	websocketController controller.Websocket,
 	htmlController controller.HTML,
 	cpuController controller.CPU,
 	memoryController controller.Memory,
@@ -61,4 +62,5 @@ func (r *HTTPRouter) SetupRoutes(authenticationController controller.Authenticat
 	api.GET("/memory/usage/all", r.memoryController.GetUsage)
 	api.GET("/disk/usage/last-five-seconds", r.diskController.GetUsageLastFiveSeconds)
 	api.GET("/network/usage/last-five-seconds", r.networkController.GetUsageLastFiveSeconds)
+	api.GET("/connect", websocketController.Connect)
 }

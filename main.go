@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/selahaddinislamoglu/moni/internal/controller"
@@ -10,17 +11,12 @@ import (
 )
 
 func main() {
-	secretService := service.NewSecretService()
-	authenticationService := service.NewAuthenticationService()
-	authenticationService.Setup(secretService)
-	authorizationService := service.NewAuthorizationService()
-	authorizationService.Setup(secretService)
 
 	brokerService := service.NewBrokerService()
 	loggerSubscriber := service.NewSubscriberService()
 	loggerSubscriber.Setup(brokerService)
-	loggerFunc := func(topic string) func([]byte) {
-		return func(message []byte) {
+	loggerFunc := func(topic string) func(json.RawMessage) {
+		return func(message json.RawMessage) {
 			fmt.Printf("[%s] %s\n", topic, string(message))
 		}
 	}
@@ -28,6 +24,14 @@ func main() {
 	loggerSubscriber.Subscribe(service.MemoryTopic, loggerFunc(service.MemoryTopic))
 	loggerSubscriber.Subscribe(service.DiskTopic, loggerFunc(service.DiskTopic))
 	loggerSubscriber.Subscribe(service.NetworkTopic, loggerFunc(service.NetworkTopic))
+
+	secretService := service.NewSecretService()
+	authenticationService := service.NewAuthenticationService()
+	authenticationService.Setup(secretService)
+	authorizationService := service.NewAuthorizationService()
+	authorizationService.Setup(secretService)
+	websocketService := service.NewWebsocketService()
+	websocketService.Setup(brokerService)
 
 	cpuPublisher := service.NewPublisherService()
 	cpuPublisher.Setup(brokerService)
@@ -53,7 +57,8 @@ func main() {
 	authenticationController.Setup(authenticationService)
 	authorizationController := controller.NewAuthorizationController()
 	authorizationController.Setup(authorizationService)
-
+	websocketController := controller.NewWebsocketController()
+	websocketController.Setup(websocketService)
 	htmlController := controller.NewHTMLController()
 
 	cpuController := controller.NewCPUController()
@@ -68,6 +73,7 @@ func main() {
 	router := router.NewHTTPRouter()
 	router.SetupRoutes(authenticationController,
 		authorizationController,
+		websocketController,
 		htmlController,
 		cpuController,
 		memoryController,

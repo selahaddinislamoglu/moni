@@ -1,13 +1,14 @@
 package service
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 )
 
 type brokerClient struct {
 	ID     ClientID
-	Topics map[string]func(message []byte)
+	Topics map[string]func(message json.RawMessage)
 }
 
 type BrokerService struct {
@@ -35,7 +36,7 @@ func (b *BrokerService) Register() ClientID {
 	id := fmt.Sprintf("%d-%s", time.Now().UnixNano(), randomString(6))
 	client := &brokerClient{
 		ID:     ClientID(id),
-		Topics: make(map[string]func(message []byte)),
+		Topics: make(map[string]func(message json.RawMessage)),
 	}
 	b.clients[client.ID] = client
 	return client.ID
@@ -52,7 +53,7 @@ func (b *BrokerService) Unregister(id ClientID) {
 	delete(b.clients, id)
 }
 
-func (b *BrokerService) Subscribe(id ClientID, topic string, handler func(message []byte)) {
+func (b *BrokerService) Subscribe(id ClientID, topic string, handler func(message json.RawMessage)) {
 	client, exists := b.clients[id]
 	if !exists {
 		return
@@ -100,7 +101,7 @@ func (b *BrokerService) Publish(id ClientID, topic string, event Event) {
 		return
 	}
 	go func() {
-		message := event.ToBytes()
+		message := event.ToJSON()
 		if len(message) == 0 {
 			fmt.Printf("No message to publish for topic %s, client %s\n", topic, id)
 			return

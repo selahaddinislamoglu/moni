@@ -39,3 +39,8 @@ type HTML interface {
 	Login(ctx *gin.Context)
 	Dashboard(ctx *gin.Context)
 }
+
+type Websocket interface {
+	Setup(websocketService service.Websocket)
+	Connect(ctx *gin.Context)
+}

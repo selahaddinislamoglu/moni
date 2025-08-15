@@ -21,17 +21,16 @@ func (a *AuthorizationController) IsAuthorized(ctx *gin.Context) bool {
 
 	tokenString := ctx.GetHeader("Authorization")
 	if tokenString == "" {
-		ctx.JSON(401, gin.H{"error": "Authorization header is missing"})
-		return false
+		tokenString = ctx.Query("token")
+		if tokenString == "" {
+			ctx.JSON(401, gin.H{"error": "Authorization or token query parameter is missing"})
+			return false
+		}
+	} else {
+		tokenString = tokenString[len("Bearer "):]
 	}
 
-	token := tokenString[len("Bearer "):]
-	if token == "" {
-		ctx.JSON(401, gin.H{"error": "Token is missing"})
-		return false
-	}
-
-	authorized := a.authorizationService.IsAuthorized(token)
+	authorized := a.authorizationService.IsAuthorized(tokenString)
 	if !authorized {
 		ctx.JSON(403, gin.H{"error": "Forbidden"})
 	}

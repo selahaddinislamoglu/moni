@@ -1,6 +1,11 @@
 package service
 
-import "github.com/selahaddinislamoglu/moni/internal/model"
+import (
+	"encoding/json"
+
+	"github.com/gorilla/websocket"
+	"github.com/selahaddinislamoglu/moni/internal/model"
+)
 
 const (
 	CPUTopic     = "cpu"
@@ -46,24 +51,29 @@ type Secret interface {
 type ClientID string
 
 type Event interface {
-	ToBytes() []byte
+	ToJSON() json.RawMessage
 }
 
 type Broker interface {
 	Register() ClientID
 	Unregister(id ClientID)
-	Subscribe(id ClientID, topic string, handler func(message []byte))
+	Subscribe(id ClientID, topic string, handler func(message json.RawMessage))
 	Unsubscribe(id ClientID, topic string)
 	Publish(id ClientID, topic string, event Event)
 }
 
 type Subscriber interface {
 	Setup(broker Broker)
-	Subscribe(topic string, handler func(message []byte))
+	Subscribe(topic string, handler func(message json.RawMessage))
 	Unsubscribe(topic string)
 }
 
 type Publisher interface {
 	Setup(broker Broker)
 	Publish(topic string, event Event)
+}
+
+type Websocket interface {
+	Setup(broker Broker)
+	Connect(conn *websocket.Conn) error
 }

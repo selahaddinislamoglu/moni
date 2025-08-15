@@ -7,7 +7,7 @@ type Disk struct {
 	Time  int64   `json:"time"`
 }
 
-func (d Disk) ToBytes() []byte {
+func (d Disk) ToJSON() json.RawMessage {
 	data, _ := json.Marshal(d)
 	return data
 }

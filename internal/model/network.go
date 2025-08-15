@@ -7,7 +7,7 @@ type Network struct {
 	Time  int64   `json:"time"`
 }
 
-func (n Network) ToBytes() []byte {
+func (n Network) ToJSON() json.RawMessage {
 	data, _ := json.Marshal(n)
 	return data
 }
